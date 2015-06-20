@@ -1,0 +1,24 @@
+{
+  "name": "indie-casa",
+  "version": "0.0.1",
+  "authors": [
+    "Buck Tower <bucktower14@gmail.com>"
+  ],
+  "description": "indie.casa source",
+  "main": "index.php",
+  "license": "GNU GPL v3.0",
+  "homepage": "indie.casa",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-social": "~4.9.1",
+    "bootstrap": "~3.3.5",
+    "font-awesome": "~4.3.0",
+    "jquery": "~2.1.4"
+  }
+}

@@ -1,0 +1,45 @@
+body {
+    background-image: url("../images/backgroundblur.png");
+    background-color: #2A889B;
+    background-position: center top;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
+#logo {
+  width: 75px;
+  height: 75px;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+#middle-search {
+  height: 70%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10%;
+  color: #fff;
+}
+
+#band {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#footer {
+   position:absolute;
+   bottom:0;
+   text-align: center;
+   margin-left: auto;
+   margin-right: auto;
+   width: 100%;
+   color: #ccc;
+   font-size: 10px;
+}
+
+#indie-casa-text {
+  width: 60%;
+  height: auto;
+}
