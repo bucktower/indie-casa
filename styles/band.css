@@ -1,0 +1,32 @@
+.section-padding {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  padding-top: 1px;
+
+}
+
+#band-info {
+  background-color: #76BFCD;
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+#band-photo {
+  float: right;
+  width: 180px;
+  margin-top: 10px;
+}
+
+#indie-alert {
+  text-align: center;
+  margin-top: 15px;
+}
+
+#band-concerts {
+  background-color: #3DA2B7;
+}
+
+#band-music {
+  background-color: #76BFCD;
+}
