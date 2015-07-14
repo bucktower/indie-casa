@@ -43,7 +43,7 @@
   $wiki_content_p = str_replace("|", "", preg_replace('#('.preg_quote($startPoint).')([\w|\s|(|)|,]*)('.preg_quote($endPoint).')#si', '$1$3', $wiki_content_p));
   $wiki_content_p = str_replace("[[", "", $wiki_content_p);
   $wiki_content_p = str_replace("]]", "", $wiki_content_p);
-  $wiki_content_p = preg_replace("~\<ref\>(.*?)\</ref\>~", "", $wiki_content_p);
+  $wiki_content_p = preg_replace("~\<ref(.*?)\</ref\>~", "", $wiki_content_p);
 
   // now we must translate from wiki markup -> HTML
   $wiky = new wiky;
