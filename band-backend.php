@@ -32,25 +32,49 @@
   // get the actual wiki markup from the first part of the page
   $wiki_content = $band_info["query"]["pages"][$band_key[0]]["revisions"][0]["*"];
 
-  // for this variable, we only want the band's biography, none of that infobox-y
-  // stuff. this will only get text after the bold band name
-  $wiki_content_p = strstr($wiki_content, "'''$wiki_band_name'''");
+  //TODO: Case for redirects (for example, if you "The Alabama Shakes" instead of "Alabama Shakes")
 
-  // Some preliminary parsing
-  // preg_replace & str_replace to get rid of those internal-Wikipedia links
-  $startPoint = "[[";
-  $endPoint = "|";
-  $wiki_content_p = str_replace("|", "", preg_replace('#('.preg_quote($startPoint).')([\w|\s|(|)|,]*)('.preg_quote($endPoint).')#si', '$1$3', $wiki_content_p));
-  $wiki_content_p = str_replace("[[", "", $wiki_content_p);
-  $wiki_content_p = str_replace("]]", "", $wiki_content_p);
-  $wiki_content_p = preg_replace("~\<ref(.*?)\</ref\>~", "", $wiki_content_p);
+  /**
+   * BIOGRAPHY
+   * Getting the band's biography
+   */
+    // for this variable, we only want the band's biography, none of that infobox-y
+    // stuff. this will only get text after the bold band name
+    $wiki_content_p = strstr($wiki_content, "'''$wiki_band_name'''");
 
-  // now we must translate from wiki markup -> HTML
-  $wiky = new wiky;
-  $input=htmlspecialchars($wiki_content_p);
-  $wiki_content_p_parsed = $wiky->parse($input)
+    // Some preliminary parsing
+    // preg_replace & str_replace to get rid of those internal-Wikipedia links, <ref> tags, etc.
+    $startPoint = "[[";
+    $endPoint = "|";
+    $wiki_content_p = str_replace("|", "", preg_replace('#('.preg_quote($startPoint).')([\w|\s|(|)|,]*)('.preg_quote($endPoint).')#si', '$1$3', $wiki_content_p));
+    $wiki_content_p = str_replace("[[", "", $wiki_content_p);
+    $wiki_content_p = str_replace("]]", "", $wiki_content_p);
+    $wiki_content_p = preg_replace("~\<ref(.*?)\</ref\>~", "", $wiki_content_p);
 
-  // Getting band's hometown/origin
-  // foundOrigin -- boolean (whether was able to find origin from Wikipedia)
-  //$foundOrigin = preg_match()
-  ?>
+    // now we must translate from wiki markup -> HTML
+    $wiky = new wiky;
+    $input=htmlspecialchars($wiki_content_p);
+    $wiki_content_p_parsed = $wiky->parse($input);
+
+  /**
+   * ORIGIN
+   * Getting the band's origin
+   */
+    // Getting band's hometown/origin
+    // foundOrigin -- boolean (whether was able to find origin from Wikipedia)
+    $delimiter = '#';
+    $startTag = 'origin';
+    $endTag = ']]';
+    $regex = $delimiter . preg_quote($startTag, $delimiter). '(.*?)'
+                        . preg_quote($endTag, $delimiter)
+                        . $delimiter
+                        . 's';
+    $foundOrigin = preg_match($regex,$wiki_content,$matches);
+    $origin = $matches[0];
+
+    // some parsing
+    $origin = str_replace("origin", "", $origin);
+    $origin = str_replace("=", "", $origin);
+    $origin = str_replace("[[", "", $origin);
+    $origin = str_replace("]]", "", $origin);
+?>
