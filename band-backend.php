@@ -10,7 +10,7 @@
 
   $opts = array('http' =>
     array(
-      'user_agent' => 'IndieMe/0.1 (http://www.indieme.com/)'
+      'user_agent' => 'IndieCasa/0.1 (http://www.indie.casa/)'
     )
   );
   $context = stream_context_create($opts);
@@ -32,7 +32,7 @@
   // get the actual wiki markup from the first part of the page
   $wiki_content = $band_info["query"]["pages"][$band_key[0]]["revisions"][0]["*"];
 
-  //TODO: Case for redirects (for example, if you "The Alabama Shakes" instead of "Alabama Shakes")
+  // TODO: Case for redirects (for example, if you "The Alabama Shakes" instead of "Alabama Shakes")
 
   /**
    * BIOGRAPHY
@@ -40,7 +40,7 @@
    */
     // for this variable, we only want the band's biography, none of that infobox-y
     // stuff. this will only get text after the bold band name
-    $wiki_content_p = strstr($wiki_content, "'''$wiki_band_name'''");
+    $wiki_content_p = stristr($wiki_content, "'''$wiki_band_name'''");
 
     // Some preliminary parsing
     // preg_replace & str_replace to get rid of those internal-Wikipedia links, <ref> tags, etc.
@@ -77,4 +77,57 @@
     $origin = str_replace("=", "", $origin);
     $origin = str_replace("[[", "", $origin);
     $origin = str_replace("]]", "", $origin);
+
+  /**
+   * LABEL
+   * Getting the band's origin
+   */
+    // Getting band's current label (listed last)
+    // foundLabel -- boolean (whether was able to find origin from Wikipedia)
+    $delimiter = '#';
+    $startTag = 'label';
+    $endTag = PHP_EOL;
+    $regex = $delimiter . preg_quote($startTag, $delimiter). '(.*?)'
+                        . preg_quote($endTag, $delimiter)
+                        . $delimiter
+                        . 's';
+    $foundlabel = preg_match($regex,$wiki_content,$matches);
+    // putting each record label into its own array element
+    $labelArray = explode(",",$matches[1]);
+    // so, right now we have something like "Warner Bros Records|Warner Bros." -- now we filter out the part after "|"
+    $label = substr_replace(end($labelArray),"",strpos(end($labelArray),"|"));
+
+    // just getting rid of the nusiance
+    $label = str_replace("label", "", $label);
+    $label = str_replace("=", "", $label);
+    $label = str_replace("[[", "", $label);
+    $label = str_replace("]]", "", $label);
+
+    // now we gotta do a second call to see if this label is associated with any of the big 3
+    $prepped_label_name = str_replace(' ', '_', $label);
+    $url = "http://en.wikipedia.org/w/api.php?action=query&titles={$prepped_label_name}&prop=revisions&rvprop=content&rvsection=0&format=json";
+    $label_info = json_decode(file_get_contents($url, FALSE, $context), true);
+    $label_key = array_keys($label_info["query"]["pages"]);
+    $wiki_content_label = $label_info["query"]["pages"][$label_key[0]]["revisions"][0]["*"];
+
+    $delimiter = '#';
+    $startTag = '{{';
+    $endTag = "'''";
+    $regex = $delimiter . preg_quote($startTag, $delimiter). '(.*?)'
+                        . preg_quote($endTag, $delimiter)
+                        . $delimiter
+                        . 's';
+    $foundOrigin = preg_match($regex,$wiki_content_label,$matches);
+    $label_infobox = $matches[0];
+
+    // search for key terms in the record label's wikipedia page infobox
+    if(strpos($label_infobox,'Warner Bros') !== false) {
+      $isBandIndie = 'Warner Music Group';
+    } elseif(strpos($label_infobox,'Sony') !== false) {
+      $isBandIndie = 'Sony Music Entertainment';
+    } elseif(strpos($label_infobox,'Universal Music') !== false) {
+      $isBandIndie = 'Universal Music Group';
+    } else {
+      $isBandIndie = 'none';
+    }
 ?>
