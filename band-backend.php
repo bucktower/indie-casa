@@ -5,7 +5,7 @@
   require_once("wiky.inc.php");
 
 
-  $band_name = $_GET["band"];
+  $band_name = ucwords($_GET["band"]);
   $prepped_band_name = str_replace(' ', '_', $band_name);
 
   $opts = array('http' =>
@@ -122,12 +122,12 @@
 
     // search for key terms in the record label's wikipedia page infobox
     if(strpos($label_infobox,'Warner Bros') !== false) {
-      $isBandIndie = 'Warner Music Group';
+      $isBandIndie = 'a record label owned by <b>Warner Music Group</b>';
     } elseif(strpos($label_infobox,'Sony') !== false) {
-      $isBandIndie = 'Sony Music Entertainment';
+      $isBandIndie = 'a record label owned by <b>Sony Music Entertainment</b>';
     } elseif(strpos($label_infobox,'Universal Music') !== false) {
-      $isBandIndie = 'Universal Music Group';
+      $isBandIndie = 'a record label owned by <b>Universal Music Group</b>';
     } else {
-      $isBandIndie = 'none';
+      $isBandIndie = 'a <b>truly independent record label</b>';
     }
 ?>
