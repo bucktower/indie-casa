@@ -93,6 +93,7 @@
                         . 's';
     $foundlabel = preg_match($regex,$wiki_content,$matches);
     // putting each record label into its own array element
+    $lalArray = $matches[1];
     $labelArray = explode(",",$matches[1]);
     // so, right now we have something like "Warner Bros Records|Warner Bros." -- now we filter out the part after "|"
     $label = substr_replace(end($labelArray),"",strpos(end($labelArray),"|"));
@@ -102,6 +103,11 @@
     $label = str_replace("=", "", $label);
     $label = str_replace("[[", "", $label);
     $label = str_replace("]]", "", $label);
+
+    // What if the label is a flatlist? We shall reprocess it
+    if($label == "{{flatlist") {
+      $label = "ERROR";
+    }
 
     // now we gotta do a second call to see if this label is associated with any of the big 3
     $prepped_label_name = str_replace(' ', '_', $label);
